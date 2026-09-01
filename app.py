@@ -22,3 +22,22 @@ if resume:
 
     st.write("Resume text:")
     st.write(resume_text) 
+    
+  
+st.subheader("Job description")
+job_description = st.text_area(
+    "Paste job description here"
+    ,height = 250)
+
+if st.button("Analyze Resume"): 
+    
+    if not resume:
+        st.warning("Upload your resume")
+        
+    elif not job_description:
+        st.warning("Please enter a job description.")
+        
+    else:
+        st.success("Ready to analyze")
+        
+    
