@@ -13,5 +13,12 @@ if resume:
     
     st.write("Resume uploaded successfully!")
     st.write("Number of pages:", len(pdf_reader.pages))
+    
+    resume_text =""
+    
+    for page in pdf_reader.pages:
+     text = page.extract_text()
+     resume_text+=text 
 
-
+    st.write("Resume text:")
+    st.write(resume_text) 
