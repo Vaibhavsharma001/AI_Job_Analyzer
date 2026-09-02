@@ -1,6 +1,27 @@
 import streamlit as st 
 import PyPDF2  #allows Python to read PDF files.
 
+skills = [
+    "python",
+    "java",
+    "javascript",
+    "react",
+    "html",
+    "css",
+    "sql",
+    "mongodb",
+    "git",
+    "github",
+    "streamlit",
+    "django",
+    "flask",
+    "fastapi",
+    "machine learning",
+    "data science",
+    "aws",
+    "docker"
+]
+
 st.title("AI & Job Analyzer")
 st.write("Analyze your resume against a job description")
 st.subheader("Upload Your Resume")
@@ -38,6 +59,34 @@ if st.button("Analyze Resume"):
         st.warning("Please enter a job description.")
         
     else:
-        st.success("Ready to analyze")
+        resume_lower = resume_text.lower()
+        job_lower = job_description.lower()
         
+        matching_skills = []
+        
+        for skill in skills:
+            if skill in resume_lower and skill in job_lower:
+                matching_skills.append(skill)
+                
+        missing_skills = []
+        for skill in skills:
+            if skill in job_lower and skill not in resume_lower:
+                missing_skills.append(skill)
+                
+        st.subheader("Matching Skills")
+        
+
+        if matching_skills:
+            st.write(matching_skills)
+        else:
+            st.write("No matching skills found.")
+
+
+        st.subheader("Missing Skills")
+
+        if missing_skills:
+            st.write(missing_skills)
+        else:
+            st.write("No missing skills found.") 
+  
     
