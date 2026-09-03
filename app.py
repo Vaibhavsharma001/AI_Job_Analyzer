@@ -19,7 +19,13 @@ skills = [
     "machine learning",
     "data science",
     "aws",
-    "docker"
+    "docker",
+    "kubernetes",
+    "jenkins",
+    "redis",
+    "postgresql",
+    "linux",
+    "azure"
 ]
 
 st.title("AI & Job Analyzer")
@@ -61,32 +67,42 @@ if st.button("Analyze Resume"):
     else:
         resume_lower = resume_text.lower()
         job_lower = job_description.lower()
-        
+
+        st.write("Resume text length:", len(resume_lower))
+        st.write("Job description length:", len(job_lower))
+
         matching_skills = []
-        
+
         for skill in skills:
             if skill in resume_lower and skill in job_lower:
                 matching_skills.append(skill)
-                
+
         missing_skills = []
+
         for skill in skills:
             if skill in job_lower and skill not in resume_lower:
                 missing_skills.append(skill)
-                
+
         st.subheader("Matching Skills")
-        
 
         if matching_skills:
             st.write(matching_skills)
         else:
             st.write("No matching skills found.")
 
-
         st.subheader("Missing Skills")
 
         if missing_skills:
             st.write(missing_skills)
         else:
-            st.write("No missing skills found.") 
-  
-    
+            st.write("No missing skills found")
+
+        total_required_skills = len(matching_skills) + len(missing_skills)
+
+        if total_required_skills > 0:
+            ats_score = (len(matching_skills) / total_required_skills) * 100
+        else:
+            ats_score = 0
+
+        st.subheader("ATS SCORE")
+        st.write(f"{ats_score:.0f}%")
