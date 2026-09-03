@@ -1,6 +1,19 @@
 import streamlit as st 
 import PyPDF2  #allows Python to read PDF files.
+import os
 
+
+from dotenv import load_dotenv
+from google import genai
+
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+
+if not api_key:
+    st.error("GEMINI API key not found.please add it to your .env file")
+    st.stop()
+    
+client = genai.Client(api_key = api_key)    
 skills = [
     "python",
     "java",
@@ -106,3 +119,39 @@ if st.button("Analyze Resume"):
 
         st.subheader("ATS SCORE")
         st.write(f"{ats_score:.0f}%")
+        
+        st.subheader("AI Analysis")
+
+        prompt = f"""
+You are an expert resume and recruitment assistant.
+
+Analyze the following resume against the job description.
+
+RESUME:
+{resume_text}
+
+JOB DESCRIPTION:
+{job_description}
+
+Provide:
+
+1. Overall suitability of the candidate
+2. Important matching skills
+3. Important missing skills
+4. Experience relevance
+5. Three specific improvements the candidate should make
+6. A short final recommendation
+
+Keep the answer clear and practical.
+"""
+
+        try:
+            response = client.models.generate_content(
+                model="gemini-3.7-flash",
+                contents=prompt
+            )
+
+            st.write(response.text)
+
+        except Exception as e:
+            st.error(f"AI analysis failed: {e}")
