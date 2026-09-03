@@ -1,7 +1,7 @@
 import streamlit as st 
 import PyPDF2  #allows Python to read PDF files.
 import os
-
+import time
 
 from dotenv import load_dotenv
 from google import genai
@@ -122,10 +122,10 @@ if st.button("Analyze Resume"):
         
         st.subheader("AI Analysis")
 
-        prompt = f"""
-You are an expert resume and recruitment assistant.
+    prompt = f"""
+You are an expert resume reviewer and career advisor.
 
-Analyze the following resume against the job description.
+Analyze the candidate's resume against the given job description.
 
 RESUME:
 {resume_text}
@@ -133,25 +133,58 @@ RESUME:
 JOB DESCRIPTION:
 {job_description}
 
-Provide:
+Provide the following sections:
 
-1. Overall suitability of the candidate
-2. Important matching skills
-3. Important missing skills
-4. Experience relevance
-5. Three specific improvements the candidate should make
-6. A short final recommendation
+1. Overall Suitability
+Give a short assessment of how suitable the candidate is for this job.
 
-Keep the answer clear and practical.
+2. Matching Skills
+List the important skills from the job description that are present in the resume.
+
+3. Missing Skills
+List the important skills from the job description that are missing from the resume.
+
+4. Experience Relevance
+Explain how well the candidate's projects and experience match the job requirements.
+
+5. Resume Improvements
+Give exactly 3 specific improvements the candidate should make to their resume.
+
+6. Suggested Resume Changes
+Give practical examples of what the candidate could add or rewrite in their resume.
+Do not invent experience or skills that are not supported by the resume.
+
+7. Final Recommendation
+Give a short recommendation about whether the candidate should apply for this job.
+
+Keep the response clear, honest, practical, and easy to understand.
 """
 
-        try:
-            response = client.models.generate_content(
-                model="gemini-3.7-flash",
-                contents=prompt
-            )
+    try:
 
+        response = None
+
+        for attempt in range(3):
+
+            try:
+                response = client.models.generate_content(
+                    model="gemini-3.7-flash",
+                    contents=prompt
+                )
+
+                break
+
+            except Exception as e:
+
+                if "503" in str(e):
+                    time.sleep(3)
+                else:
+                    raise e
+
+        if response:
             st.write(response.text)
+        else:
+            st.error("Gemini is temporarily unavailable. Please try again.")
 
-        except Exception as e:
-            st.error(f"AI analysis failed: {e}")
+    except Exception as e:
+        st.error(f"AI analysis failed: {e}")
