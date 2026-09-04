@@ -96,19 +96,27 @@ if st.button("Analyze Resume"):
             if skill in job_lower and skill not in resume_lower:
                 missing_skills.append(skill)
 
-        st.subheader("Matching Skills")
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            st.subheader("✅ Matching Skills")
 
         if matching_skills:
-            st.write(matching_skills)
+            for skill in matching_skills:
+                st.success(skill)
         else:
             st.write("No matching skills found.")
 
-        st.subheader("Missing Skills")
+
+        with col2:
+            st.subheader("❌ Missing Skills")
 
         if missing_skills:
-            st.write(missing_skills)
+            for skill in missing_skills:
+                st.warning(skill)
         else:
-            st.write("No missing skills found")
+            st.write("No missing skills found.")  
 
         total_required_skills = len(matching_skills) + len(missing_skills)
 
@@ -118,7 +126,12 @@ if st.button("Analyze Resume"):
             ats_score = 0
 
         st.subheader("ATS SCORE")
-        st.write(f"{ats_score:.0f}%")
+        # st.metric() creates a large dashboard-style number.
+        st.metric(            
+            label = "Resume Match",
+            value = f"{ats_score:.0f}%"
+        )
+        st.progress(ats_score/100)
         
         st.subheader("AI Analysis")
 
