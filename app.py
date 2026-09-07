@@ -58,7 +58,13 @@ if resume:
     
     for page in pdf_reader.pages:
      text = page.extract_text()
-     resume_text+=text 
+     
+     if text:
+         resume_text+=text 
+         
+     if not resume_text.strip():
+        st.warning("Could not extract text from this PDF. Please upload a text-based resume.")
+        st.stop()
 
     st.write("Resume text:")
     st.write(resume_text) 
