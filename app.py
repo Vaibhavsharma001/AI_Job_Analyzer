@@ -62,7 +62,7 @@ if resume:
      if text:
          resume_text+=text 
          
-     if not resume_text.strip():
+    if not resume_text.strip():
         st.warning("Could not extract text from this PDF. Please upload a text-based resume.")
         st.stop()
 
@@ -80,7 +80,7 @@ if st.button("Analyze Resume"):
     if not resume:
         st.warning("Upload your resume")
         
-    elif not job_description:
+    elif not job_description.strip():
         st.warning("Please enter a job description.")
         
     else:
@@ -141,7 +141,7 @@ if st.button("Analyze Resume"):
         
         st.subheader("AI Analysis")
 
-    prompt = f"""
+        prompt = f"""
 You are an expert resume reviewer and career advisor.
 
 Analyze the candidate's resume against the given job description.
